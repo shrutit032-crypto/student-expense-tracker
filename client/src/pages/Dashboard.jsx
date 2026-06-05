@@ -332,7 +332,6 @@ function QuickNav({ active, onChange }) {
     const tabs = [
         { id: 'overview', icon: '📊', label: 'Overview' },
         { id: 'insights', icon: '🤖', label: 'Insights' },
-        { id: 'goals',    icon: '🎯', label: 'Goals'    },
     ];
     return (
         <div className="ft-quicknav">
@@ -353,7 +352,8 @@ function QuickNav({ active, onChange }) {
 // ── Main Dashboard ──────────────────────────────────────────
 export default function Dashboard() {
     const [data, setData] = useState(null);
-    const [month, setMonth] = useState(new Date().toISOString().slice(0, 7));
+    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().slice(0, 10));
+    const month = selectedDate.slice(0, 7); // YYYY-MM used for API
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('overview');
     const spent = useCountUp(data?.totalSpent || 0, 1200);
@@ -371,6 +371,10 @@ export default function Dashboard() {
             setLoading(false);
         }
     }
+
+    const formattedDate = new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-IN', {
+        day: 'numeric', month: 'long', year: 'numeric'
+    });
 
     if (loading) return (
         <div className="ft-loader">
@@ -392,12 +396,12 @@ export default function Dashboard() {
             <div className="ft-page-header">
                 <div>
                     <h1 className="ft-title">Dashboard</h1>
-                    <p className="ft-subtitle">Your financial snapshot for</p>
+                    <p className="ft-subtitle">Snapshot for {formattedDate}</p>
                 </div>
                 <input
-                    type="month"
-                    value={month}
-                    onChange={e => setMonth(e.target.value)}
+                    type="date"
+                    value={selectedDate}
+                    onChange={e => setSelectedDate(e.target.value)}
                     className="ft-month-picker"
                 />
             </div>
@@ -496,16 +500,7 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    {/* Spending Trend */}
-                    {data.monthlyTrend && data.monthlyTrend.length > 0 && (
-                        <div className="ft-card">
-                            <div className="ft-card-header">
-                                <span className="ft-card-icon">📈</span>
-                                <h3>Spending Trend</h3>
-                            </div>
-                            <TrendChart data={data.monthlyTrend} />
-                        </div>
-                    )}
+
 
                     {/* Recent Expenses */}
                     <div className="ft-card">
@@ -581,38 +576,7 @@ export default function Dashboard() {
                 </>
             )}
 
-            {/* ══════════ GOALS TAB ══════════ */}
-            {activeTab === 'goals' && (
-                <>
-                    <SavingsGoalCard data={data} />
 
-                    {/* Health Score in goals tab too */}
-                    <div className="ft-card ft-health-card">
-                        <div className="ft-card-header">
-                            <span className="ft-card-icon">💎</span>
-                            <h3>Financial Health Score</h3>
-                        </div>
-                        <HealthRing score={healthScore} />
-                        <div className="ft-health-tips">
-                            {data.budgetAlerts.length === 0 && (
-                                <div className="ft-tip ft-tip-good">✓ All budgets under control</div>
-                            )}
-                            {data.categoryBreakdown.length > 0 && (
-                                <div className="ft-tip ft-tip-good">✓ Tracking {data.categoryBreakdown.length} spending categories</div>
-                            )}
-                            {data.budgetAlerts.length > 0 && (
-                                <div className="ft-tip ft-tip-warn">⚠ {data.budgetAlerts.length} budget(s) exceeded — review them</div>
-                            )}
-                            {data.totalSpent > 15000 && (
-                                <div className="ft-tip ft-tip-warn">⚠ Spending is high — try to cut back next month</div>
-                            )}
-                            {healthScore >= 75 && (
-                                <div className="ft-tip ft-tip-good">💪 Keep it up — your finances are in great shape!</div>
-                            )}
-                        </div>
-                    </div>
-                </>
-            )}
 
         </div>
     );

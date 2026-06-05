@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
+import { useTheme } from './context/ThemeContext';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
@@ -14,6 +15,7 @@ function PrivateRoute({ children }) {
 
 function Navbar() {
     const { user, logout, isAuthenticated } = useAuth();
+    const { theme, toggleTheme } = useTheme();
     const location = useLocation();
 
     if (!isAuthenticated) return null;
@@ -40,7 +42,10 @@ function Navbar() {
                 ))}
             </div>
             <div className="nav-user">
-                <span>Hi, {user?.name || user?.email}</span>
+                <button onClick={toggleTheme} className="theme-toggle">
+                    {theme === 'light' ? '🌙' : '☀️'}
+                </button>
+                <span>Hii, {user?.name || user?.email}</span>
                 <button onClick={logout} className="btn btn-sm btn-outline">Logout</button>
             </div>
         </nav>

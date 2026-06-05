@@ -51,3 +51,15 @@ CREATE TABLE IF NOT EXISTS budgets (
     FOREIGN KEY (category_id) REFERENCES categories(id),
     UNIQUE(user_id, category_id, month)
 );
+
+CREATE TABLE IF NOT EXISTS savings_goals (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    icon TEXT DEFAULT '🎯',
+    target_amount REAL NOT NULL,
+    saved_amount REAL NOT NULL DEFAULT 0,
+    month TEXT NOT NULL, -- format: YYYY-MM
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);

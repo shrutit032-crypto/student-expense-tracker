@@ -24,7 +24,7 @@ exports.register = (req, res) => {
         const result = stmt.run(name, email, hashedPassword, role || 'student', parent_email || null);
 
         const token = jwt.sign(
-            { id: result.lastInsertRowid, email, role: role || 'student' },
+            { id: result.lastInsertRowid, name, email, role: role || 'student' },
             JWT_SECRET,
             { expiresIn: '7d' }
         );
@@ -58,7 +58,7 @@ exports.login = (req, res) => {
         }
 
         const token = jwt.sign(
-            { id: user.id, email: user.email, role: user.role },
+            { id: user.id, name: user.name, email: user.email, role: user.role },
             JWT_SECRET,
             { expiresIn: '7d' }
         );
