@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getAIInsights } from '../services/api';
+import { useTheme } from '../context/ThemeContext';
 
 const typeStyles = {
     success: { bg: '#d4edda', border: '#28a745', icon: '✅' },
@@ -12,6 +13,7 @@ const typeStyles = {
 export default function Insights() {
     const [insights, setInsights] = useState([]);
     const [loading, setLoading] = useState(true);
+    const { theme } = useTheme();
 
     useEffect(() => { loadInsights(); }, []);
 
