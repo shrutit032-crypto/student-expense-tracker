@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE = '/api';
+const API_BASE = 'https://student-expense-tracker-1s0b.onrender.com/api';
 
 const api = axios.create({ baseURL: API_BASE });
 
